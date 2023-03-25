@@ -16,7 +16,7 @@ const FooterText = styled.p`
 
 const Footer = () => (
   <FooterContainer>
-    <FooterText>&copy; {new Date().getFullYear()} Liqwid Finance. All rights reserved.</FooterText>
+    <FooterText>&copy; {new Date().getFullYear()} ADAFund. All rights reserved.</FooterText>
   </FooterContainer>
 );
 
