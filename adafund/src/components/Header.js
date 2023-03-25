@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const HeaderContainer = styled.header`
   display: flex;
@@ -19,7 +20,7 @@ const NavMenu = styled.nav`
   gap: 1rem;
 `;
 
-const NavItem = styled.a`
+const StyledLink = styled(Link)`
   color: white;
   text-decoration: none;
   &:hover {
@@ -31,9 +32,9 @@ const Header = () => (
   <HeaderContainer>
     <Logo>ADAFund</Logo>
     <NavMenu>
-      <NavItem href="#">Home</NavItem>
-      <NavItem href="#">Requests</NavItem>
-      <NavItem href="#">Contact</NavItem>
+      <StyledLink to="/">Home</StyledLink>
+      <StyledLink to="/requests">Requests</StyledLink>
+      <StyledLink to="/contact">Contact</StyledLink>
     </NavMenu>
   </HeaderContainer>
 );

@@ -1,15 +1,13 @@
 import { createGlobalStyle } from 'styled-components';
 
+
+
 const GlobalStyles = createGlobalStyle`
-  * {
+  body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: 'Roboto', sans-serif;
-  }
-
-  body {
-    background-color: #f5f5f5;
+    font-family: 'Arial', sans-serif;
+    background-color: #fff3f3;
   }
 `;
 
