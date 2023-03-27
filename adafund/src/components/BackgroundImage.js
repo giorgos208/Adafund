@@ -10,6 +10,7 @@ const ImageContainer = styled.div`
   z-index: -1;
   background-image: url('adafund/src/components/background.png');
   background-position: center;
+  background-attachment: scroll; 
   background-repeat: no-repeat;
   background-size: cover;
 `;
