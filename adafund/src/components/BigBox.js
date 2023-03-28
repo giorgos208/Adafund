@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 
 import smallBoxesData from './smallBoxesData.json';
-const SmallBox = ({
+
+export const SmallBox = ({
     name,
     description,
     onClick,
@@ -11,7 +12,7 @@ const SmallBox = ({
     totalTime
   }) => {
     const progressPercentage = (timeLeft / totalTime) * 100;
-  
+
     return (
       <div className="small-box" style={{ backgroundColor }}>
         <h3>{name}</h3>
@@ -41,7 +42,7 @@ const SmallBox = ({
   };
   
 
-const BigBox = () => {
+const BigBox = ({ searchTerm }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [popupContent, setPopupContent] = useState({ name: "", description: "" });
 
@@ -64,23 +65,13 @@ const BigBox = () => {
     setShowPopup(false);
   };
 
-  {smallBoxesData.map((box) => (
-    <SmallBox
-      key={box.name}
-      name={box.name}
-      description={box.description}
-      onClick={() => handleClick(box.name, box.description)}
-      backgroundColor={getRandomColor()}
-      twitterLink={box.twitterLink}
-      timeLeft={box.timeLeft}
-      totalTime={box.totalTime}
-    />
-  ))}
-  
+  const filteredBoxes = smallBoxesData
+  .filter((box) => box.name.toLowerCase().includes(searchTerm.toLowerCase()))
+  .sort((a, b) => b.timeLeft - a.timeLeft); // Sort based on timeLeft
 
   return (
     <div className="big-box">
-      {smallBoxesData.map((box) => (
+      {filteredBoxes.map((box) => (
         <SmallBox
           key={box.name}
           name={box.name}

@@ -33,8 +33,10 @@ const Header = () => (
     <Logo>ADAFund</Logo>
     <NavMenu>
       <StyledLink to="/">Home</StyledLink>
+      <StyledLink to="/faq">FAQ</StyledLink>
       <StyledLink to="/requests">Requests</StyledLink>
-      <StyledLink to="/contact">Contact</StyledLink>
+   
+      <StyledLink to="/dashboard">Dashboard</StyledLink>
     </NavMenu>
   </HeaderContainer>
 );
