@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFacebook, faTwitter, faLinkedin } from '@fortawesome/free-brands-svg-icons';
+import {  faTwitter } from '@fortawesome/free-brands-svg-icons';
 
 const ContactWrapper = styled.div`
   display: flex;
@@ -86,19 +86,13 @@ const Contact = () => {
       </Form>
       <ContactInfo>
         <p>ADAFund</p>
-        <p>1234 Street Name, City, Country</p>
-        <p>+1 (555) 123-4567</p>
       </ContactInfo>
       <SocialLinks>
-            <SocialLink href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-        <FontAwesomeIcon icon={faFacebook} />
-        </SocialLink>
-        <SocialLink href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+
+        <SocialLink href="https://twitter.com/adafund_io" target="_blank" rel="noopener noreferrer">
         <FontAwesomeIcon icon={faTwitter} />
         </SocialLink>
-        <SocialLink href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
-        <FontAwesomeIcon icon={faLinkedin} />
-        </SocialLink>
+
 
       </SocialLinks>
     </ContactWrapper>
