@@ -156,7 +156,7 @@ const Dashboard = () => {
     {flag ? (
       <SmallBox
         name="Example"
-        description="Example Description"
+        short_description="Example Description"
         onClick={() => console.log('Details clicked')}
         backgroundColor="#f1f1f1"
         twitterLink="https://twitter.com"
@@ -171,23 +171,23 @@ const Dashboard = () => {
           <Label htmlFor="reason">Reason for funding</Label>
           <FormField type="text" placeholder="Cardano Dapp Creation" id="reason" name="reason" required />
 
-          <Label htmlFor="short-description">Short description</Label>
-          <FormField type="text" placeholder="Need to cover developer costs." id="short-description" name="short-description" required />
+          <Label htmlFor="short_description">Short description</Label>
+          <FormField type="text" placeholder="Need to cover developer costs." id="short_description" name="short_description" required />
 
-          <Label htmlFor="long-description">Long description</Label>
-          <TextAreaField placeholder="Hello, my name is ... and I am looking forward to creating ..." id="long-description" name="long-description" required></TextAreaField>
+          <Label htmlFor="long_description">Long description</Label>
+          <TextAreaField placeholder="Hello, my name is ... and I am looking forward to creating ..." id="long_description" name="long_description" required></TextAreaField>
 
-          <Label htmlFor="twitter-handle">Twitter handle</Label>
-          <FormField type="text" placeholder="@..." id="twitter-handle" name="twitter-handle" />
+          <Label htmlFor="twitter_handle">Twitter handle</Label>
+          <FormField type="text" placeholder="@..." id="twitter_handle" name="twitter_handle" />
 
-          <Label htmlFor="total-ada">Total ADA asking</Label>
-          <FormField type="number" id="total-ada" name="total-ada" required />
+          <Label htmlFor="total_ada">Total ADA asking</Label>
+          <FormField type="number" id="total_ada" name="total_ada" required />
 
-          <Label htmlFor="request-duration">Request time duration (in days)</Label>
-          <FormField type="text" placeholder="14" id="request-duration" name="request-duration" required />
+          <Label htmlFor="request_duration">Request time duration (in days)</Label>
+          <FormField type="text" placeholder="14" id="request_duration" name="request_duration" required />
 
-          <CheckBox id="terms-checkbox" required />
-          <Label htmlFor="terms-checkbox">
+          <CheckBox id="terms_checkbox" required />
+          <Label htmlFor="terms_checkbox">
             I agree to the{' '}
             <TermsLink href="#" onClick={() => setShowModal(true)}>
               Terms of Service

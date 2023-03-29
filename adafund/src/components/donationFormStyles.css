@@ -1,0 +1,77 @@
+.donation-form-group {
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .donation-form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  
+  .donation-form-group input[type="text"] {
+    width: 100%;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: none;
+    background-color: #f5f5f5;
+    color: #333;
+    font-size: 1rem;
+    font-weight: normal;
+  }
+/* Dropdown.css */
+.dropdown {
+    position: relative;
+    display: inline-block;
+  }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  .dropdown-content a:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+  
+  .dropdown:hover .dropbtn {
+    background-color: #3e8e41;
+  }
+  /* Dropdown.css */
+/* Dropdown.css */
+/* Dropdown.css */
+
+#pop_reason {
+    font-size: 1.5rem;
+    line-height: 1.5;
+    letter-spacing: 1px;
+    color: #777;
+    font-style: italic;
+}
+#pop_short_description {
+    font-size: 2rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    color: #333;
+}
+#pop_long_description {
+    font-size: 3rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+}

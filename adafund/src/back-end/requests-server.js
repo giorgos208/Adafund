@@ -25,7 +25,22 @@ const exampleData = [
 
 app.post('/api/data', async (req, res) => {
   const data = req.body;
-  data["name"] = `Request ${last_request}`;
+  res.send("Data have been received. I will process them.");
+  console.log("Data have been received. I will process them.");
+  processPOSTrequest(data); 
+  
+});
+
+async function processPOSTrequest (data) {
+  //await verifyBlockchain(data.tx)
+  const now = new Date();
+  const utcTime = now.toUTCString();
+  data["start_date"] = utcTime
+  now.setDate(now.getDate() + parseInt(data.request_duration));
+  data["finish_date"] = now.toUTCString();
+  data["id"] = `Request ${last_request}`;
+  //to be removed
+  data["address"] = "addr1qx7ryxl47an2st42m5mdflx0aepnejjkjckzsvruk88kcfhnmq44f03kr5866dmw3x6x0xy7htr5wmg3l3tpaq3yl3tqg808kx"
 
   const jsonString = JSON.stringify(data);
   console.log("Request received",jsonString);
@@ -36,11 +51,7 @@ app.post('/api/data', async (req, res) => {
   const newData = JSON.parse(jsonString);
   jsonData.push(newData);
   await fs.writeFile('./src/components/smallBoxesData.json', JSON.stringify(jsonData));
-  
-
-  res.send("Data sent");
-  
-});
+}
 
 const port = 5000;
 app.listen(port, () => {
