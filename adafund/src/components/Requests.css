@@ -5,18 +5,36 @@ body {
 }
 
 .progress-bar-container {
-    width: 100%;
-    height: 10px;
-    background-color: #f0f0f0;
-    border-radius: 5px;
-    overflow: hidden;
-  }
+  position: relative;
+  width: 100%;
+  height: 20px;
+  background-color: #f2f2f2;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+ 
   
-  .progress-bar {
-    height: 100%;
-    background-color: #007bff;
-    border-radius: 5px;
-  }
+}
+
+.progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background-color: #007bff;
+  border-radius: 5px;
+
+  transition: width 0.5s ease-in-out;
+}
+
+.progress-bar-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 12px;
+  color: #ffffff;
+}
+
   .button-container {
     display: flex;
     justify-content: center;
@@ -62,6 +80,7 @@ body {
     color: #0a7bc2;
   }
   
+
   #buttons-within {
     display: flex;
     flex-direction: column;
@@ -92,6 +111,7 @@ body {
   }
   
   .small-box {
+    position: relative; 
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -103,19 +123,39 @@ body {
     border-radius: 5px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   }
+  #id {
+    position: absolute;
+    top: 4%;
+    left: 3%;
+    /* add any other styling properties you need */
+  }
+  #time_left {
+    position: absolute;
+    top: 67%;
+    left:90%;
+    /* add any other styling properties you need */
+  }
   
   
   
   .small-box button {
     margin-top: 1rem;
     padding: 0.5rem 1rem;
-    background-color: #007bff;
+    background-color: #169851;
     color: #ffffff;
     border: none;
     border-radius: 3px;
     cursor: pointer;
   }
-  
+  input[type="text"]::placeholder {
+    text-align: center;
+    font-size: 14px;
+    color: #999;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
   .small-box button:hover {
     background-color: #0056b3;
   }
