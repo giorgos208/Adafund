@@ -1,12 +1,25 @@
 import React, { useState } from "react";
 import { Modal, Button, Form } from 'react-bootstrap';
 import { Lucid, Blockfrost } from "https://unpkg.com/lucid-cardano@0.9.8/web/mod.js"
+import styled from 'styled-components';
+import { Link, useParams } from 'react-router-dom';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {  faTwitter } from '@fortawesome/free-brands-svg-icons';
 import smallBoxesData from './smallBoxesData.json';
 import './donationFormStyles.css';
 import NamiIcon from './nami.svg';
 import EternlIcon from './eternl.png';
 
+const SocialLink = styled.a`
+  color: #1da1f2;
+  font-size: 24px;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #0d84d9;
+  }
+`;
 
 export const Dropdown = ({ donationAmount, address }) => {
   const handleNamiClick = async () => {
@@ -127,17 +140,32 @@ export const SmallBox = ({
     <div className="small-box" style={{ backgroundColor }}>
       <h4 id="time_left">{remainingDays}d, {remainingHours}h left</h4>
       <h4 id="id">{id}</h4>
+   
+           <Link 
+  to={{
+    pathname: `/requests/${id}`,
+    state: { id: id },
+  }}
+  className="simple-link"
+>
+  Open 🔗
+</Link>
       <h3>{reason}</h3>
       <p>{short_description}</p>
       <a href={twitterLink} target="_blank" rel="noopener noreferrer" className="twitter-icon">
         {/* Add your Twitter icon here */}
       </a>
       
-      <h3>{total_ada} $ADA</h3>
+      <h3>{parseFloat(total_ada).toLocaleString()} ₳</h3>
+
+
+
      
       <div className="button-container">
       <Dropdown donationAmount={donationAmount} address={address} />
-        <button className="details-button" onClick={onClick}>Details</button>
+        <button id="details-button" onClick={onClick}>Details</button>
+       
+
       </div>
       <Form.Group controlId="formBasicEmail" className="donation-form-group">
         <Form.Control type="text" placeholder={placeholder_text} value={donationAmount} onChange={handleDonationChange} />
@@ -161,19 +189,10 @@ const BigBox = ({ searchTerm }) => {
       total_ada:"",
       twitterLink:"",
       timeLeft:"",
-      totalTime:"",
+      start_date:"",
       finish_date:"",
       address:""});
 
-  const getRandomColor = () => {
-    const letters = "0123456789ABCDEF";
-    let color = "#";
-    for (let i = 0; i < 6; i++) {
-      const index = Math.floor(Math.random() * (i % 2 === 0 ? 8 : 16));
-      color += letters[index];
-    }
-    return color;
-  };
 
   const handleClick = ( id,
     reason,
@@ -182,8 +201,7 @@ const BigBox = ({ searchTerm }) => {
     total_ada,
 
     twitterLink,
-    timeLeft,
-    totalTime,
+    start_date,
     finish_date,
     address) => {
     setShowPopup(true);
@@ -194,6 +212,7 @@ const BigBox = ({ searchTerm }) => {
       long_description,
       total_ada,
       twitterLink,
+      start_date,
       finish_date,
       address
     });
@@ -203,14 +222,15 @@ const BigBox = ({ searchTerm }) => {
   const closePopup = () => {
     setShowPopup(false);
   };
-
+ 
   const filteredBoxes = smallBoxesData
-  .filter((box) => box.id.toLowerCase().includes(searchTerm.toLowerCase()))
+  .filter((box) => box.id && box.id.toLowerCase().includes(searchTerm.toLowerCase()))
   .sort((a, b) => {
     const dateA = new Date(Date.parse(a.finish_date));
     const dateB = new Date(Date.parse(b.finish_date));
     return dateA - dateB;
   });
+
 
   return (
     <div className="big-box">
@@ -222,9 +242,9 @@ const BigBox = ({ searchTerm }) => {
           short_description={box.short_description}
           long_description={box.long_description}
           total_ada={box.total_ada}
-          onClick={() => handleClick(box.id,box.reason, box.short_description, box.long_description,box.total_ada,box.twitterLink,box.timeLeft,box.totalTime,box.finish_date,box.address)}
-          backgroundColor={getRandomColor()}
-          twitterLink={box.twitterLink}
+          onClick={() => handleClick(box.id,box.reason, box.short_description, box.long_description,box.total_ada,box.twitter_handle,box.start_date,box.finish_date,box.address)}
+          backgroundColor={box.backgroundColor}
+          twitterLink={box.twitter_handle}
           timeLeft={box.timeLeft}
           totalTime={box.totalTime}
           address={box.address}
@@ -232,20 +252,41 @@ const BigBox = ({ searchTerm }) => {
       ))}
       {showPopup && (
         <div className="popup">
+           <div className="popup-content">
           <h3 id="pop_id">{popupContent.id}</h3>
           <p id="pop_reason">{popupContent.reason}</p>
           <p id="pop_short_description">{popupContent.short_description}</p>
           <p  id="pop_long_description">{popupContent.long_description}</p>
-          <p id="pop_total_ada">{popupContent.total_ada}</p>
-          <p id="pop_twitterLink">{popupContent.twitterLink}</p>
-          <p id="pop_imeLeft">{popupContent.timeLeft}</p>
-          <p id="pop_totalTime">{popupContent.totalTime}</p>
-          <p id="pop_finish_date">{popupContent.finish_date}</p>
-          <p id="pop_address">{popupContent.address}</p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+  <p id="pop_start_date" style={{ display: 'inline-block', marginRight: '1em' }}>Requested:</p>
+  <p id="pop_total_ada" style={{ display: 'inline-block', paddingLeft: '1em' }}>{parseFloat(popupContent.total_ada).toLocaleString()} ₳</p>
+</div>
+
+<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+  <p style={{ display: 'inline-block', marginRight: '1em'}}>Socials:</p>
+  {popupContent.twitterLink !== '' && (
+    <p style={{ display: 'inline-block', marginRight: '1em'}}>
+     <SocialLink href={`https://twitter.com/${popupContent.twitterLink}`} target="_blank" rel="noopener noreferrer">
+        <FontAwesomeIcon icon={faTwitter} />
+        </SocialLink>
+    </p>
+  )}
+</div>
+
+
+         
+        
+          <div>
+          <p id="pop_start_date">Request start date: {popupContent.start_date}</p>
+          <p id="pop_finish_date">Request finish date: {popupContent.finish_date}</p>
+          </div>
+          <p id="pop_short_description">Requester's address: {popupContent.address}</p>
 
             <button onClick={closePopup}>Close</button>
+            </div>
         </div>
       )}
+      
     </div>
   );
 };

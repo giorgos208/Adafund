@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Header from './components/Header';
+import SmallBoxDetails from './components/SmallBoxDetails';
 import Hero from './components/Hero';
 import Dashboard from './components/Dashboard'; 
 import Requests from './components/Requests';
@@ -48,6 +49,8 @@ function App() {
         
           <Route path="/requests" element={<Requests />} />
           <Route path="/dashboard" element={<Dashboard />} /> 
+          <Route path="/requests/:id" element={<SmallBoxDetails />} />
+
           {/* Add more routes as needed */}
         </Routes>
         <Footer />

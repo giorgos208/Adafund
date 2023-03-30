@@ -55,9 +55,10 @@ const DashboardContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  flex-wrap: wrap;
   display: flex;
   justify-content: center;
-  align-items: center;
+
   height: 100vh;
 `;
 
@@ -95,7 +96,7 @@ const DropdownContent = styled.div`
 function sendPOSTrequest(formValues) {
    
     
-    axios.post('http://localhost:5000/api/data', formValues)
+    axios.post('http://localhost:5000/api/request', formValues)
       .then(response => {
         console.log()
         console.log(response.data); 
