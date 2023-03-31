@@ -1,7 +1,15 @@
+
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Modal from 'react-modal';
+import './Requests.css';
 import axios from 'axios';
+import NamiIcon from './nami.svg';
+import { Lucid, Blockfrost } from "https://unpkg.com/lucid-cardano@0.9.8/web/mod.js"
+import smallBoxesData from './smallBoxesData.json';
+import {SmallBoxDetailsv2} from './SmallBoxDetails';
+//import { Blockfrost, Lucid } from "lucid-cardano";
+import EternlIcon from './eternl.png';
 import SmallBox from './BigBox.js'; // Replace './SmallBox' with the actual path to your SmallBox component file
 
 const FormField = styled.input`
@@ -52,46 +60,24 @@ const TermsLink = styled.a`
 `;
 
 const DashboardContainer = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
   padding: 20px;
-  flex-wrap: wrap;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-
-  height: 100vh;
 `;
+
+
+
 
 
 const Title = styled.h1`
   font-size: 2rem;
   margin-bottom: 20px;
 `;
-const WalletButton = styled.button`
-  background-color: #4caf50;
-  color: white;
-  padding: 10px 20px;
-  font-size: 1rem;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-  outline: none;
-  margin-top: 20px;
 
-  &:hover {
-    background-color: #45a049;
-  }
-`;
 
-const DropdownContent = styled.div`
-  display: ${({ show }) => (show ? 'block' : 'none')};
-  position: absolute;
-  background-color: #f1f1f1;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-  padding: 12px 16px;
-  z-index: 1;
-`;
+
 
 function sendPOSTrequest(formValues) {
    
@@ -105,35 +91,174 @@ function sendPOSTrequest(formValues) {
       .catch(error => {
         console.error(error);
       });
-    }
+}
+
 
 const Dashboard = () => {
   const [walletConnected, setWalletConnected] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [flag, setFlag] = useState(false);
-  const [showModal, setShowModal] = useState(false);
+   const [showModal, setShowModal] = useState(false);
+  const [signer_address, setSignerAddress] = useState(""); 
+  const [stake_address, setStakeAddress] = useState("");
+  const [hasRequest, setHasRequest] = useState(false);
+  const [RequestID, setRequestID] = useState("-1");
+  const [wallet, setWallet] = useState("");
 
-  const handleConnectWallet = (option) => {
-    // Call the corresponding function based on the selected option
-    if (option === 1) {
-      console.log('Option 1 selected');
-    } else if (option === 2) {
-      console.log('Option 2 selected');
+
+  async function isRequester(stake_address) {
+    try {
+      const response = await axios.post('http://localhost:5000/api/validate', { stake_address });
+      console.log(stake_address)
+      console.log(response.data); 
+      if (response.data === false) return false
+      else {
+        setRequestID(response.data)
+      
+      return true
+      }
+    } catch (error) {
+      console.error(error);
+      return false;
     }
+  }
+  
+  
 
-    // Set the walletConnected state to true
-    setWalletConnected(true);
+  
+  const Dropdown = () => {
+    const handleNamiClick = async () => {
+      const api = await window.cardano.nami.enable();
+        const lucid = await Lucid.new(
+          new Blockfrost("https://cardano-mainnet.blockfrost.io/api/v0", "mainnetAXWgU2phwchiCXQmCsNEwBlHT9jM3hFP"),
+          "Mainnet",
+        );
+        lucid.selectWallet(api);
+        const address = await lucid.wallet.address()
+        setWallet("nami");
+        let stake_address = ""
+        //
+        await axios.get(`https://cardano-mainnet.blockfrost.io/api/v0/addresses/${address}`, {
+          headers: {
+            'project_id': "mainnetAXWgU2phwchiCXQmCsNEwBlHT9jM3hFP"
+          }
+        })
+          .then(response => {
+            // handle success
+            stake_address = response.data.stake_address
+          })
+          .catch(error => {
+            // handle error
+            console.log(error);
+          });        
+        setSignerAddress(address);
+        setStakeAddress(stake_address)
+     
+        setWalletConnected(true);
+        const flag = await isRequester(stake_address)
+     
+        setHasRequest(Boolean(flag));
+  
+    };
+  
+    const handleEternlClick = async () => {
+      const api = await window.cardano.eternl.enable();
+      const lucid = await Lucid.new(
+        new Blockfrost("https://cardano-mainnet.blockfrost.io/api/v0", "mainnetAXWgU2phwchiCXQmCsNEwBlHT9jM3hFP"),
+        "Mainnet",
+      );
+      lucid.selectWallet(api);
+      setWallet("eternl");
+      const address = await lucid.wallet.address()
+      let stake_address = ""
+      //
+      await axios.get(`https://cardano-mainnet.blockfrost.io/api/v0/addresses/${address}`, {
+        headers: {
+          'project_id': "mainnetAXWgU2phwchiCXQmCsNEwBlHT9jM3hFP"
+        }
+      })
+        .then(response => {
+          // handle success
+          stake_address = response.data.stake_address
+        })
+        .catch(error => {
+          // handle error
+          console.log(error);
+        });        
+        setSignerAddress(address);
+        console.log("Set address", address)
+        setStakeAddress(stake_address)
+   
+        setWalletConnected(true);
+        const flag = await isRequester(stake_address)
+   
+        setHasRequest(Boolean(flag));
+  
+    };
+  
+    return (
+      <div className="dropdown">
+        <button className ="donate-button">Connect Wallet</button>
+        <div className="dropdown-content">
+          <a onClick={handleNamiClick}>
+          Nami
+            <img src={NamiIcon} alt="Nami Icon" style={{ width: '23px', marginLeft: '12px' }} />
+         
+          </a>
+          <a onClick={handleEternlClick}>
+          Eternl
+            <img src={EternlIcon} alt="Eternl Icon" style={{ width: '29px', marginLeft: '12px' }} />
+            
+          </a>
+        </div>
+      </div>
+    );
   };
+  
   const closeModal = () => {
     setShowModal(false);
   };
-  const handleFormSubmit = (event) => {
+  const handleFormSubmit = async (event) => {
     event.preventDefault();
     const form = event.target;
     const formData = new FormData(form);
     const formValues = Object.fromEntries(formData.entries());
+    formValues["address"] = signer_address;
+    formValues["stake_address"] = stake_address;
     console.log(formValues);
- sendPOSTrequest(formValues) 
+    console.log(wallet)
+ 
+    const lucid = await Lucid.new(
+      new Blockfrost("https://cardano-mainnet.blockfrost.io/api/v0", "mainnetAXWgU2phwchiCXQmCsNEwBlHT9jM3hFP"),
+      "Mainnet",
+    );
+    
+    if (wallet === "") return
+    else {
+      let api;
+      if (wallet === "nami")  api = await window.cardano.nami.enable();
+      else api = await window.cardano.eternl.enable();
+      
+      lucid.selectWallet(api);
+      const tx = await lucid.newTx()
+        .payToAddress("addr1qyywq00rz444qg9uvcsgf2w6uu6fawkvd24x0a9x9yp4vj7kk8w703jmsdn670gugwvz4qjg47vfn4hv6r5n5z74aj5sdp52wc", { lovelace: 1000000n })
+        .complete();
+      
+      const signedTx = await tx.sign().complete();
+      
+      try { 
+      const txHash = await signedTx.submit();
+      alert("Thank you for using our service. Your request will soon be processed. Wait some seconds and refresh this page.")
+      formValues["txHash"] = txHash;
+      console.log(txHash);
+      //
+      sendPOSTrequest(formValues) 
+      }
+      catch (error){
+        alert("Something went wrong. No funds, or did you cancel the transaction?")
+      }
+      
+    }
+   
 
   };
   
@@ -142,33 +267,32 @@ const Dashboard = () => {
       {!walletConnected && (
         <>
           <Title>Sign in with your wallet to access the dashboard.</Title>
-          <WalletButton onClick={() => setShowDropdown(!showDropdown)}>
-            Connect Wallet
-          </WalletButton>
-          <DropdownContent show={showDropdown}>
-            <button onClick={() => handleConnectWallet(1)}>Option 1</button>
-            <button onClick={() => handleConnectWallet(2)}>Option 2</button>
-          </DropdownContent>
+         
+         <Dropdown></Dropdown>
         </>
       )}
   
   {walletConnected && (
   <>
-    {flag ? (
-      <SmallBox
-        name="Example"
-        short_description="Example Description"
-        onClick={() => console.log('Details clicked')}
-        backgroundColor="#f1f1f1"
-        twitterLink="https://twitter.com"
-        timeLeft={10}
-        totalTime={100}
-      />
+ <div style={{ marginBottom: "20px" }}>
+  Connected: {stake_address}
+</div>
+    {hasRequest ? (
+      <>
+       <div style={{ marginBottom: "20px" }}> You already have a fund request running:
+  
+</div>
+  <SmallBoxDetailsv2 smallBoxesData={smallBoxesData} id={RequestID.toString()} />
+  <div style={{ marginTop: "20px" }}> Please wait for this one to expire, or use a different wallet to start a new one.
+  
+  </div>
+  </>
+
     ) : (
       <>
-        
+   
         <form onSubmit={handleFormSubmit}>
-        <Heading>Text Message as a Heading</Heading>
+        <Heading>Make sure to read the FAQ before proceeding!</Heading>
           <Label htmlFor="reason">Reason for funding</Label>
           <FormField type="text" placeholder="Cardano Dapp Creation" id="reason" name="reason" required />
 
@@ -184,8 +308,9 @@ const Dashboard = () => {
           <Label htmlFor="total_ada">Total ADA asking</Label>
           <FormField type="number" id="total_ada" name="total_ada" required />
 
-          <Label htmlFor="request_duration">Request time duration (in days)</Label>
-          <FormField type="text" placeholder="14" id="request_duration" name="request_duration" required />
+          <Label htmlFor="request_duration">Request time duration in days (maximum: 30)</Label>
+<FormField type="number" placeholder="14" id="request_duration" name="request_duration" required max="30" style={{textAlign: "center"}} />
+
 
           <CheckBox id="terms_checkbox" required />
           <Label htmlFor="terms_checkbox">
@@ -195,7 +320,7 @@ const Dashboard = () => {
             </TermsLink>
           </Label>
 
-          <button type="submit">Submit</button>
+          <button className ="donate-button" type="submit">Submit</button>
         </form>
         <Modal isOpen={showModal} onRequestClose={closeModal} contentLabel="Terms of Service">
           <h2>Terms of Service</h2>

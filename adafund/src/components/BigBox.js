@@ -3,7 +3,7 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import { Lucid, Blockfrost } from "https://unpkg.com/lucid-cardano@0.9.8/web/mod.js"
 import styled from 'styled-components';
 import { Link, useParams } from 'react-router-dom';
-
+import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {  faTwitter } from '@fortawesome/free-brands-svg-icons';
 import smallBoxesData from './smallBoxesData.json';
@@ -22,13 +22,26 @@ const SocialLink = styled.a`
 `;
 
 export const Dropdown = ({ donationAmount, address }) => {
+  function sendDonateRequest(txHash,address,number) {
+    const data = { txHash, address, number };
+
+    axios.post('http://localhost:5000/api/donate', data)
+      .then(response => {
+        console.log()
+        console.log(response.data); 
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
   const handleNamiClick = async () => {
    
     
-     const number = parseFloat(donationAmount);
+     const number = Math.trunc(donationAmount);
 
     if (isNaN(number)) {
-      alert("Invalid input. Please enter a number.");
+      alert("Invalid input. Please enter an number.");
     } else {
     
       const lucid = await Lucid.new(
@@ -41,14 +54,16 @@ export const Dropdown = ({ donationAmount, address }) => {
       lucid.selectWallet(api);
       
       const tx = await lucid.newTx()
-        .payToAddress(address, { lovelace: 5000000n })
+        .payToAddress(address, { lovelace: number*1000*1000 })
         .complete();
       
       const signedTx = await tx.sign().complete();
       
       const txHash = await signedTx.submit();
+     
       
       console.log(txHash);
+      sendDonateRequest(txHash,address,number) 
     
     }
    
@@ -59,11 +74,12 @@ export const Dropdown = ({ donationAmount, address }) => {
     
 
       
-    const number = parseFloat(donationAmount);
+    const number = Math.trunc(donationAmount);
 
     if (isNaN(number)) {
       alert("Invalid input. Please enter a number.");
     } else {
+     
      
       const lucid = await Lucid.new(
         new Blockfrost("https://cardano-mainnet.blockfrost.io/api/v0", "mainnetAXWgU2phwchiCXQmCsNEwBlHT9jM3hFP"),
@@ -75,7 +91,7 @@ export const Dropdown = ({ donationAmount, address }) => {
       lucid.selectWallet(api);
       
       const tx = await lucid.newTx()
-        .payToAddress(address, { lovelace: 5000000n })
+        .payToAddress(address, { lovelace: number*1000*1000 })
         .complete();
       
       const signedTx = await tx.sign().complete();
@@ -83,6 +99,7 @@ export const Dropdown = ({ donationAmount, address }) => {
       const txHash = await signedTx.submit();
       
       console.log(txHash);
+      sendDonateRequest(txHash,address,number) 
     
     }
 
@@ -119,9 +136,10 @@ export const SmallBox = ({
   timeLeft,
   totalTime,
   finish_date,
-  address
+  address,
+  collected_ada
 }) => {
-  const progressPercentage = (35 / 50) * 100;
+  const progressPercentage = (collected_ada / total_ada) * 100;
   const now = new Date();
   const date = new Date(Date.parse(finish_date));
   const remainingTimeMs = date.getTime() - now.getTime();
@@ -129,7 +147,7 @@ export const SmallBox = ({
   const remainingHours = Math.floor((remainingTimeMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const ada_remaining = parseInt(total_ada)*(100-progressPercentage)/100
   const [donationAmount, setDonationAmount] = useState("");
-  const placeholder_text = "Enter ADA amount (max: " + ada_remaining.toString() +")"
+  const placeholder_text = "Enter ADA amount (max: " + Math.trunc(ada_remaining).toString() +")"
   
   const handleDonationChange = (e) => {
     setDonationAmount(e.target.value);
@@ -180,7 +198,7 @@ export const SmallBox = ({
   );
 };
 
-const BigBox = ({ searchTerm }) => {
+const BigBox =  ({ searchTerm }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [popupContent, setPopupContent] = useState({ id:"",
       reason:"",
@@ -222,6 +240,19 @@ const BigBox = ({ searchTerm }) => {
   const closePopup = () => {
     setShowPopup(false);
   };
+
+
+  function sendGETrequest() {
+    
+    axios.get('http://localhost:5000/api/data')
+    .then(response => {
+      
+    })
+    .catch(error => {
+      console.error('Error sending GET request for updates:', error);
+    });
+    }
+   sendGETrequest() 
  
   const filteredBoxes = smallBoxesData
   .filter((box) => box.id && box.id.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -248,6 +279,7 @@ const BigBox = ({ searchTerm }) => {
           timeLeft={box.timeLeft}
           totalTime={box.totalTime}
           address={box.address}
+          collected_ada={box.collected_ada}
         />
       ))}
       {showPopup && (
