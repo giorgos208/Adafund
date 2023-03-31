@@ -56,22 +56,43 @@
 /* Dropdown.css */
 /* Dropdown.css */
 
-#pop_reason {
+#pop_short_description {
     font-size: 1.5rem;
     line-height: 1.5;
     letter-spacing: 1px;
     color: #777;
-    font-style: italic;
+  
 }
-#pop_short_description {
+#pop_reason,#pop_total_ada {
     font-size: 2rem;
     font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 5px;
     color: #333;
 }
-#pop_long_description {
-    font-size: 3rem;
-    font-weight: bold;
+#pop_long_description{
+  font-size: 1.25rem;
+  letter-spacing: 2.2px;
+  max-width: 75%;
+  line-height: 1.55;
+  margin: 0 auto;
+  padding-bottom: 3%;
+}
+
+#pop_start_date  {
+    font-size: 1rem;
     letter-spacing: 2px;
+}
+#pop_finish_date{
+  font-size: 1rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+}
+#pop_id {
+
+  font-size: 1.5rem;
+  font-weight: bold;
+  letter-spacing: 2px;
+ 
+  text-decoration: underline;
 }

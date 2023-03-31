@@ -1,21 +1,47 @@
 import React, { useState } from "react";
 import { Modal, Button, Form } from 'react-bootstrap';
 import { Lucid, Blockfrost } from "https://unpkg.com/lucid-cardano@0.9.8/web/mod.js"
-
+import styled from 'styled-components';
+import { Link, useParams } from 'react-router-dom';
+import axios from 'axios';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {  faTwitter } from '@fortawesome/free-brands-svg-icons';
 import smallBoxesData from './smallBoxesData.json';
 import './donationFormStyles.css';
 import NamiIcon from './nami.svg';
 import EternlIcon from './eternl.png';
 
+const SocialLink = styled.a`
+  color: #1da1f2;
+  font-size: 24px;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #0d84d9;
+  }
+`;
 
 export const Dropdown = ({ donationAmount, address }) => {
+  function sendDonateRequest(txHash,address,number) {
+    const data = { txHash, address, number };
+
+    axios.post('http://localhost:5000/api/donate', data)
+      .then(response => {
+        console.log()
+        console.log(response.data); 
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }
+
   const handleNamiClick = async () => {
    
     
-     const number = parseFloat(donationAmount);
+     const number = Math.trunc(donationAmount);
 
     if (isNaN(number)) {
-      alert("Invalid input. Please enter a number.");
+      alert("Invalid input. Please enter an number.");
     } else {
     
       const lucid = await Lucid.new(
@@ -28,14 +54,16 @@ export const Dropdown = ({ donationAmount, address }) => {
       lucid.selectWallet(api);
       
       const tx = await lucid.newTx()
-        .payToAddress(address, { lovelace: 5000000n })
+        .payToAddress(address, { lovelace: number*1000*1000 })
         .complete();
       
       const signedTx = await tx.sign().complete();
       
       const txHash = await signedTx.submit();
+     
       
       console.log(txHash);
+      sendDonateRequest(txHash,address,number) 
     
     }
    
@@ -46,11 +74,12 @@ export const Dropdown = ({ donationAmount, address }) => {
     
 
       
-    const number = parseFloat(donationAmount);
+    const number = Math.trunc(donationAmount);
 
     if (isNaN(number)) {
       alert("Invalid input. Please enter a number.");
     } else {
+     
      
       const lucid = await Lucid.new(
         new Blockfrost("https://cardano-mainnet.blockfrost.io/api/v0", "mainnetAXWgU2phwchiCXQmCsNEwBlHT9jM3hFP"),
@@ -62,7 +91,7 @@ export const Dropdown = ({ donationAmount, address }) => {
       lucid.selectWallet(api);
       
       const tx = await lucid.newTx()
-        .payToAddress(address, { lovelace: 5000000n })
+        .payToAddress(address, { lovelace: number*1000*1000 })
         .complete();
       
       const signedTx = await tx.sign().complete();
@@ -70,6 +99,7 @@ export const Dropdown = ({ donationAmount, address }) => {
       const txHash = await signedTx.submit();
       
       console.log(txHash);
+      sendDonateRequest(txHash,address,number) 
     
     }
 
@@ -106,9 +136,10 @@ export const SmallBox = ({
   timeLeft,
   totalTime,
   finish_date,
-  address
+  address,
+  collected_ada
 }) => {
-  const progressPercentage = (35 / 50) * 100;
+  const progressPercentage = (collected_ada / total_ada) * 100;
   const now = new Date();
   const date = new Date(Date.parse(finish_date));
   const remainingTimeMs = date.getTime() - now.getTime();
@@ -116,7 +147,7 @@ export const SmallBox = ({
   const remainingHours = Math.floor((remainingTimeMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
   const ada_remaining = parseInt(total_ada)*(100-progressPercentage)/100
   const [donationAmount, setDonationAmount] = useState("");
-  const placeholder_text = "Enter ADA amount (max: " + ada_remaining.toString() +")"
+  const placeholder_text = "Enter ADA amount (max: " + Math.trunc(ada_remaining).toString() +")"
   
   const handleDonationChange = (e) => {
     setDonationAmount(e.target.value);
@@ -127,17 +158,32 @@ export const SmallBox = ({
     <div className="small-box" style={{ backgroundColor }}>
       <h4 id="time_left">{remainingDays}d, {remainingHours}h left</h4>
       <h4 id="id">{id}</h4>
+   
+           <Link 
+  to={{
+    pathname: `/requests/${id}`,
+    state: { id: id },
+  }}
+  className="simple-link"
+>
+  Open 🔗
+</Link>
       <h3>{reason}</h3>
       <p>{short_description}</p>
       <a href={twitterLink} target="_blank" rel="noopener noreferrer" className="twitter-icon">
         {/* Add your Twitter icon here */}
       </a>
       
-      <h3>{total_ada} $ADA</h3>
+      <h3>{parseFloat(total_ada).toLocaleString()} ₳</h3>
+
+
+
      
       <div className="button-container">
       <Dropdown donationAmount={donationAmount} address={address} />
-        <button className="details-button" onClick={onClick}>Details</button>
+        <button id="details-button" onClick={onClick}>Details</button>
+       
+
       </div>
       <Form.Group controlId="formBasicEmail" className="donation-form-group">
         <Form.Control type="text" placeholder={placeholder_text} value={donationAmount} onChange={handleDonationChange} />
@@ -152,7 +198,7 @@ export const SmallBox = ({
   );
 };
 
-const BigBox = ({ searchTerm }) => {
+const BigBox =  ({ searchTerm }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [popupContent, setPopupContent] = useState({ id:"",
       reason:"",
@@ -161,19 +207,10 @@ const BigBox = ({ searchTerm }) => {
       total_ada:"",
       twitterLink:"",
       timeLeft:"",
-      totalTime:"",
+      start_date:"",
       finish_date:"",
       address:""});
 
-  const getRandomColor = () => {
-    const letters = "0123456789ABCDEF";
-    let color = "#";
-    for (let i = 0; i < 6; i++) {
-      const index = Math.floor(Math.random() * (i % 2 === 0 ? 8 : 16));
-      color += letters[index];
-    }
-    return color;
-  };
 
   const handleClick = ( id,
     reason,
@@ -182,8 +219,7 @@ const BigBox = ({ searchTerm }) => {
     total_ada,
 
     twitterLink,
-    timeLeft,
-    totalTime,
+    start_date,
     finish_date,
     address) => {
     setShowPopup(true);
@@ -194,6 +230,7 @@ const BigBox = ({ searchTerm }) => {
       long_description,
       total_ada,
       twitterLink,
+      start_date,
       finish_date,
       address
     });
@@ -204,13 +241,27 @@ const BigBox = ({ searchTerm }) => {
     setShowPopup(false);
   };
 
+
+  function sendGETrequest() {
+    
+    axios.get('http://localhost:5000/api/data')
+    .then(response => {
+      
+    })
+    .catch(error => {
+      console.error('Error sending GET request for updates:', error);
+    });
+    }
+   sendGETrequest() 
+ 
   const filteredBoxes = smallBoxesData
-  .filter((box) => box.id.toLowerCase().includes(searchTerm.toLowerCase()))
+  .filter((box) => box.id && box.id.toLowerCase().includes(searchTerm.toLowerCase()))
   .sort((a, b) => {
     const dateA = new Date(Date.parse(a.finish_date));
     const dateB = new Date(Date.parse(b.finish_date));
     return dateA - dateB;
   });
+
 
   return (
     <div className="big-box">
@@ -222,30 +273,52 @@ const BigBox = ({ searchTerm }) => {
           short_description={box.short_description}
           long_description={box.long_description}
           total_ada={box.total_ada}
-          onClick={() => handleClick(box.id,box.reason, box.short_description, box.long_description,box.total_ada,box.twitterLink,box.timeLeft,box.totalTime,box.finish_date,box.address)}
-          backgroundColor={getRandomColor()}
-          twitterLink={box.twitterLink}
+          onClick={() => handleClick(box.id,box.reason, box.short_description, box.long_description,box.total_ada,box.twitter_handle,box.start_date,box.finish_date,box.address)}
+          backgroundColor={box.backgroundColor}
+          twitterLink={box.twitter_handle}
           timeLeft={box.timeLeft}
           totalTime={box.totalTime}
           address={box.address}
+          collected_ada={box.collected_ada}
         />
       ))}
       {showPopup && (
         <div className="popup">
+           <div className="popup-content">
           <h3 id="pop_id">{popupContent.id}</h3>
           <p id="pop_reason">{popupContent.reason}</p>
           <p id="pop_short_description">{popupContent.short_description}</p>
           <p  id="pop_long_description">{popupContent.long_description}</p>
-          <p id="pop_total_ada">{popupContent.total_ada}</p>
-          <p id="pop_twitterLink">{popupContent.twitterLink}</p>
-          <p id="pop_imeLeft">{popupContent.timeLeft}</p>
-          <p id="pop_totalTime">{popupContent.totalTime}</p>
-          <p id="pop_finish_date">{popupContent.finish_date}</p>
-          <p id="pop_address">{popupContent.address}</p>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+  <p id="pop_start_date" style={{ display: 'inline-block', marginRight: '1em' }}>Requested:</p>
+  <p id="pop_total_ada" style={{ display: 'inline-block', paddingLeft: '1em' }}>{parseFloat(popupContent.total_ada).toLocaleString()} ₳</p>
+</div>
+
+<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+  <p style={{ display: 'inline-block', marginRight: '1em'}}>Socials:</p>
+  {popupContent.twitterLink !== '' && (
+    <p style={{ display: 'inline-block', marginRight: '1em'}}>
+     <SocialLink href={`https://twitter.com/${popupContent.twitterLink}`} target="_blank" rel="noopener noreferrer">
+        <FontAwesomeIcon icon={faTwitter} />
+        </SocialLink>
+    </p>
+  )}
+</div>
+
+
+         
+        
+          <div>
+          <p id="pop_start_date">Request start date: {popupContent.start_date}</p>
+          <p id="pop_finish_date">Request finish date: {popupContent.finish_date}</p>
+          </div>
+          <p id="pop_short_description">Requester's address: {popupContent.address}</p>
 
             <button onClick={closePopup}>Close</button>
+            </div>
         </div>
       )}
+      
     </div>
   );
 };
