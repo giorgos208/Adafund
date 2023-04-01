@@ -10,7 +10,7 @@ const Requests = () => {
     <div className="requests-container">
       <h1>Running Requests</h1>
       <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-      <p>Requests update on page refresh.</p>
+      <p>Requests update automatically.</p>
       <BigBox searchTerm={searchTerm} />
     </div>
   );

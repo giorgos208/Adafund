@@ -1,16 +1,17 @@
-import React, { useState } from "react";
+import React, { useState,useEffect  } from "react";
 import { Modal, Button, Form } from 'react-bootstrap';
 import { Lucid, Blockfrost } from "https://unpkg.com/lucid-cardano@0.9.8/web/mod.js"
 import styled from 'styled-components';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {  faTwitter } from '@fortawesome/free-brands-svg-icons';
-import smallBoxesData from './smallBoxesData.json';
+//import smallBoxesData from './smallBoxesData.json';
 import './donationFormStyles.css';
 import NamiIcon from './nami.svg';
 import EternlIcon from './eternl.png';
-
+const smallBoxesData = [];
 const SocialLink = styled.a`
   color: #1da1f2;
   font-size: 24px;
@@ -200,6 +201,7 @@ export const SmallBox = ({
 
 const BigBox =  ({ searchTerm }) => {
   const [showPopup, setShowPopup] = useState(false);
+  const [BoxesData, setBoxesData] = useState(smallBoxesData)
   const [popupContent, setPopupContent] = useState({ id:"",
       reason:"",
       short_description:"",
@@ -239,22 +241,28 @@ const BigBox =  ({ searchTerm }) => {
 
   const closePopup = () => {
     setShowPopup(false);
-  };
+  };  
 
+  let getFlag=true;
 
-  function sendGETrequest() {
-    
-    axios.get('http://localhost:5000/api/data')
-    .then(response => {
-      
-    })
-    .catch(error => {
-      console.error('Error sending GET request for updates:', error);
-    });
+  
+  useEffect(() => {
+    function sendGETrequest() {
+      axios
+        .get("http://localhost:5000/api/data")
+        .then((response) => {
+          setBoxesData(response.data);
+        })
+        .catch((error) => {
+          console.error("Error sending GET request for updates:", error);
+        });
     }
-   sendGETrequest() 
- 
-  const filteredBoxes = smallBoxesData
+
+    sendGETrequest();
+  }, []); 
+ //console.log("eeeeeeeee",BoxesData)
+ //console.log("iiiiiiii",smallBoxesData)
+  const filteredBoxes = BoxesData
   .filter((box) => box.id && box.id.toLowerCase().includes(searchTerm.toLowerCase()))
   .sort((a, b) => {
     const dateA = new Date(Date.parse(a.finish_date));
