@@ -20,16 +20,22 @@ const FormField = styled.input`
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
+  background-color: #808080; /* set background color to black */
+  color: #ffffff;
   outline: none;
+  ::placeholder { 
+    color: #ffffff;
+  }
   &:focus {
     border-color: #4caf50;
   }
 `;
 const Heading = styled.h1`
   font-size: 2rem;
-  color: #4caf50;
+  color: #ffffff;
 `;
 const Label = styled.label`
+color: #ffffff;
   font-size: 1.2rem;
   display: block;
   margin-bottom: 5px;
@@ -42,8 +48,13 @@ const TextAreaField = styled.textarea`
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
+  background-color:  #808080;
+  color: #ffffff;
   outline: none;
   resize: none;
+  ::placeholder { 
+    color:  #BEBEBE;
+  }
   &:focus {
     border-color: #4caf50;
   }
@@ -75,6 +86,7 @@ const DashboardContainer = styled.div`
 const Title = styled.h1`
   font-size: 2rem;
   margin-bottom: 20px;
+  color: #ffffff;
 `;
 
 
@@ -200,12 +212,12 @@ const Dashboard = () => {
       <div className="dropdown">
         <button className ="donate-button">Connect Wallet</button>
         <div className="dropdown-content">
-          <a onClick={handleNamiClick}>
+        <a onClick={handleNamiClick} style={{ color: 'white' }}>
           Nami
             <img src={NamiIcon} alt="Nami Icon" style={{ width: '23px', marginLeft: '12px' }} />
          
           </a>
-          <a onClick={handleEternlClick}>
+          <a onClick={handleEternlClick} style={{ color: 'white' }}>
           Eternl
             <img src={EternlIcon} alt="Eternl Icon" style={{ width: '29px', marginLeft: '12px' }} />
             
@@ -275,16 +287,16 @@ const Dashboard = () => {
   
   {walletConnected && (
   <>
- <div style={{ marginBottom: "20px" }}>
+ <div style={{ marginBottom: "20px", color: "#ffffff"}}>
   Connected: {stake_address}
 </div>
     {hasRequest ? (
       <>
-       <div style={{ marginBottom: "20px" }}> You already have a fund request running:
+       <div style={{ marginBottom: "20px", color: "#ffffff"}}> You already have a fund request running:
   
 </div>
   <SmallBoxDetailsv2 smallBoxesData={smallBoxesData} id={RequestID.toString()} />
-  <div style={{ marginTop: "20px" }}> Please wait for this one to expire, or use a different wallet to start a new one.
+  <div style={{ marginTop: "20px",color: "#ffffff" }}> Please wait for this one to expire, or use a different wallet to start a new one.
   
   </div>
   </>

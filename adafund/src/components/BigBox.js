@@ -147,7 +147,8 @@ export const SmallBox = ({
   const remainingTimeMs = date.getTime() - now.getTime();
   const remainingDays = Math.floor(remainingTimeMs / (1000 * 60 * 60 * 24));
   const remainingHours = Math.floor((remainingTimeMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const ada_remaining = parseInt(total_ada)*(100-progressPercentage)/100
+  let ada_remaining = parseInt(total_ada)*(100-progressPercentage)/100
+  if (ada_remaining === 0) ada_remaining+=1;
   const [donationAmount, setDonationAmount] = useState("");
   const placeholder_text = "Enter ADA amount (max: " + Math.trunc(ada_remaining).toString() +")"
   
@@ -321,7 +322,7 @@ const BigBox =  ({ searchTerm }) => {
           <p id="pop_start_date">Request start date: {popupContent.start_date}</p>
           <p id="pop_finish_date">Request finish date: {popupContent.finish_date}</p>
           </div>
-          <p id="pop_short_description">Requester's address: {popupContent.address}</p>
+          <p id="pop_requester">Requester's address: {popupContent.address}</p>
 
             <button onClick={closePopup}>Close</button>
             </div>

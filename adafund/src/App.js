@@ -32,13 +32,18 @@ const ImageContainer = styled.div`
   background-attachment: scroll;
   background-repeat: no-repeat;
   background-size: cover;
-  opacity: 0.3; /* optional: adjust the opacity as needed */
 `;
 
 function App() {
-  return (
-    <Router>
-      <GlobalStyles />
+  const isMobile = window.innerWidth < 768;
+  const notCompatibleMessage = (
+    <div style={{ backgroundColor: 'red', color: 'white', textAlign: 'center', padding: '10px' }}>
+      Sorry, this website is not compatible with mobile devices.
+      Feel free to use it in your browser though!
+    </div>
+  );
+  const content = (
+    <div style={{ display: isMobile ? 'none' : 'block' }}>
       <Header />
       <MainContent>
         <ImageContainer />
@@ -55,8 +60,16 @@ function App() {
         </Routes>
         <Footer />
       </MainContent>
+    </div>
+  );
+  
+  return (
+    <Router>
+      <GlobalStyles />
+      {isMobile ? notCompatibleMessage : content}
     </Router>
   );
 }
+
 
 export default App;
