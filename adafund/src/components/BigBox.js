@@ -1,7 +1,7 @@
 import React, { useState,useEffect  } from "react";
 import { Modal, Button, Form } from 'react-bootstrap';
 //import { Lucid, Blockfrost } from "https://unpkg.com/lucid-cardano@0.9.8/web/mod.js"
-import { Lucid, Blockfrost } from "lucid-cardano";
+import { Lucid, Blockfrost } from 'lucid-cardano';
 import styled from 'styled-components';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
