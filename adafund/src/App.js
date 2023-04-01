@@ -1,15 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Header from './components/Header';
-import SmallBoxDetails from './components/SmallBoxDetails';
-import Hero from './components/Hero';
-import Dashboard from './components/Dashboard'; 
-import Requests from './components/Requests';
-import Features from './components/Features';
-import Footer from './components/Footer';
+import Header from './components/Header.js';
+import SmallBoxDetails from './components/SmallBoxDetails.js';
+import Hero from './components/Hero.js';
+import Dashboard from './components/Dashboard.js'; 
+import Requests from './components/Requests.js';
+import Features from './components/Features.js';
+import Footer from './components/Footer.js';
 //import Contact from './components/Contact';
-import FAQ from './components/FAQ';
-import GlobalStyles from './components/GlobalStyles';
+import FAQ from './components/FAQ.js';
+import GlobalStyles from './components/GlobalStyles.js';
 import background from './components/background.png';
 import styled from 'styled-components';
 

@@ -5,9 +5,10 @@ import Modal from 'react-modal';
 import './Requests.css';
 import axios from 'axios';
 import NamiIcon from './nami.svg';
-import { Lucid, Blockfrost } from "https://unpkg.com/lucid-cardano@0.9.8/web/mod.js"
+//import { Lucid, Blockfrost } from "https://unpkg.com/lucid-cardano@0.9.8/web/mod.js"
+import { Lucid, Blockfrost } from "lucid-cardano";
 import smallBoxesData from './smallBoxesData.json';
-import {SmallBoxDetailsv2} from './SmallBoxDetails';
+import {SmallBoxDetailsv2} from './SmallBoxDetails.js';
 //import { Blockfrost, Lucid } from "lucid-cardano";
 import EternlIcon from './eternl.png';
 import SmallBox from './BigBox.js'; // Replace './SmallBox' with the actual path to your SmallBox component file

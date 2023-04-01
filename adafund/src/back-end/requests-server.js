@@ -1,9 +1,11 @@
-const express = require('express');
-const fs = require('fs').promises;
+import express from 'express';
+import { promises as fs } from 'fs';
+//const fs = require('fs').promises;
+//fs = fs.promises
 const app = express();
-const axios = require('axios');
+import axios  from 'axios';
 
-const cors = require('cors');
+import cors from 'cors';
 app.use(express.json());
 app.use(cors({ origin: 'http://localhost:3000' }));
 

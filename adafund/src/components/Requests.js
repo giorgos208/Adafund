@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import BigBox from './BigBox';
-import SearchBar from './SearchBar';
+import BigBox from './BigBox.js';
+import SearchBar from './SearchBar.js';
 import './Requests.css';
 
 const Requests = () => {
