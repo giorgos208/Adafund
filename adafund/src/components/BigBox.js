@@ -27,10 +27,11 @@ export const Dropdown = ({ donationAmount, address }) => {
   function sendDonateRequest(txHash,address,number) {
     const data = { txHash, address, number };
 
-    axios.post('http://localhost:5000/api/donate', data)
+    axios.post('https://wenlobster.online:5000/api/donate', data)
       .then(response => {
         console.log()
         console.log(response.data); 
+        alert("Your donation is being processed.")
       })
       .catch(error => {
         console.error(error);
@@ -251,7 +252,7 @@ const BigBox =  ({ searchTerm }) => {
   useEffect(() => {
     function sendGETrequest() {
       axios
-        .get("http://localhost:5000/api/data")
+        .get("https://wenlobster.online:5000/api/data")
         .then((response) => {
           setBoxesData(response.data);
         })
