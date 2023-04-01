@@ -15,13 +15,13 @@ const HeroContainer = styled.div`
 
 const Title = styled.h1`
   font-size: 3rem;
-  color: white;
+  color: black;
   margin-bottom: 1rem;
 `;
 
 const Subtitle = styled.h2`
   font-size: 1.5rem;
-  color: white;
+  color: black;
 `;
 
 const Hero = () => (

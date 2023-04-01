@@ -30,7 +30,7 @@ const StyledLink = styled(Link)`
 
 const Header = () => (
   <HeaderContainer>
-    <Logo>ADAFund</Logo>
+    <StyledLink to="/"><Logo>ADAFund</Logo> </StyledLink>
     <NavMenu>
       <StyledLink to="/">Home</StyledLink>
       <StyledLink to="/faq">FAQ</StyledLink>

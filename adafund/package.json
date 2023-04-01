@@ -2,7 +2,9 @@
   "name": "adafund",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
+    "@craco/craco": "^7.1.0",
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
     "@fortawesome/free-brands-svg-icons": "^6.3.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
@@ -13,6 +15,7 @@
     "bootstrap": "^5.2.3",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "fs": "0.0.1-security",
     "lucid-cardano": "^0.9.8",
     "next": "^13.2.4",
     "react": "^18.2.0",
@@ -20,16 +23,19 @@
     "react-dom": "^18.2.0",
     "react-modal": "^3.16.1",
     "react-router-dom": "^6.10.0",
-    "react-scripts": "5.0.1",
+    "react-scripts": "^5.0.1",
     "styled-components": "^5.3.9",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
     "eject": "react-scripts eject"
-  },
+  }
+  ,
+  
+  
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -37,7 +43,6 @@
     ]
   },
   "browserslist": {
-    
     "production": [
       ">0.2%",
       "not dead",

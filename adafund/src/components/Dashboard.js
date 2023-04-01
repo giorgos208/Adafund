@@ -5,9 +5,10 @@ import Modal from 'react-modal';
 import './Requests.css';
 import axios from 'axios';
 import NamiIcon from './nami.svg';
-import { Lucid, Blockfrost } from "https://unpkg.com/lucid-cardano@0.9.8/web/mod.js"
+//import { Lucid, Blockfrost } from "https://unpkg.com/lucid-cardano@0.9.8/web/mod.js"
+import { Lucid, Blockfrost } from "lucid-cardano";
 import smallBoxesData from './smallBoxesData.json';
-import {SmallBoxDetailsv2} from './SmallBoxDetails';
+import {SmallBoxDetailsv2} from './SmallBoxDetails.js';
 //import { Blockfrost, Lucid } from "lucid-cardano";
 import EternlIcon from './eternl.png';
 import SmallBox from './BigBox.js'; // Replace './SmallBox' with the actual path to your SmallBox component file
@@ -19,16 +20,22 @@ const FormField = styled.input`
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
+  background-color: #808080; /* set background color to black */
+  color: #ffffff;
   outline: none;
+  ::placeholder { 
+    color: #ffffff;
+  }
   &:focus {
     border-color: #4caf50;
   }
 `;
 const Heading = styled.h1`
   font-size: 2rem;
-  color: #4caf50;
+  color: #ffffff;
 `;
 const Label = styled.label`
+color: #ffffff;
   font-size: 1.2rem;
   display: block;
   margin-bottom: 5px;
@@ -41,8 +48,13 @@ const TextAreaField = styled.textarea`
   box-sizing: border-box;
   border: 1px solid #ccc;
   border-radius: 4px;
+  background-color:  #808080;
+  color: #ffffff;
   outline: none;
   resize: none;
+  ::placeholder { 
+    color:  #BEBEBE;
+  }
   &:focus {
     border-color: #4caf50;
   }
@@ -74,6 +86,7 @@ const DashboardContainer = styled.div`
 const Title = styled.h1`
   font-size: 2rem;
   margin-bottom: 20px;
+  color: #ffffff;
 `;
 
 
@@ -82,7 +95,7 @@ const Title = styled.h1`
 function sendPOSTrequest(formValues) {
    
     
-    axios.post('http://localhost:5000/api/request', formValues)
+    axios.post('https://wenlobster.online:5000/api/request', formValues)
       .then(response => {
         console.log()
         console.log(response.data); 
@@ -107,7 +120,7 @@ const Dashboard = () => {
 
   async function isRequester(stake_address) {
     try {
-      const response = await axios.post('http://localhost:5000/api/validate', { stake_address });
+      const response = await axios.post('https://wenlobster.online:5000/api/validate', { stake_address });
       console.log(stake_address)
       console.log(response.data); 
       if (response.data === false) return false
@@ -199,12 +212,12 @@ const Dashboard = () => {
       <div className="dropdown">
         <button className ="donate-button">Connect Wallet</button>
         <div className="dropdown-content">
-          <a onClick={handleNamiClick}>
+        <a onClick={handleNamiClick} style={{ color: 'white' }}>
           Nami
             <img src={NamiIcon} alt="Nami Icon" style={{ width: '23px', marginLeft: '12px' }} />
          
           </a>
-          <a onClick={handleEternlClick}>
+          <a onClick={handleEternlClick} style={{ color: 'white' }}>
           Eternl
             <img src={EternlIcon} alt="Eternl Icon" style={{ width: '29px', marginLeft: '12px' }} />
             
@@ -240,7 +253,7 @@ const Dashboard = () => {
       
       lucid.selectWallet(api);
       const tx = await lucid.newTx()
-        .payToAddress("addr1qyywq00rz444qg9uvcsgf2w6uu6fawkvd24x0a9x9yp4vj7kk8w703jmsdn670gugwvz4qjg47vfn4hv6r5n5z74aj5sdp52wc", { lovelace: 1000000n })
+        .payToAddress("addr1qyywq00rz444qg9uvcsgf2w6uu6fawkvd24x0a9x9yp4vj7kk8w703jmsdn670gugwvz4qjg47vfn4hv6r5n5z74aj5sdp52wc", { lovelace: 10000000n })
         .complete();
       
       const signedTx = await tx.sign().complete();
@@ -274,16 +287,16 @@ const Dashboard = () => {
   
   {walletConnected && (
   <>
- <div style={{ marginBottom: "20px" }}>
+ <div style={{ marginBottom: "20px", color: "#ffffff"}}>
   Connected: {stake_address}
 </div>
     {hasRequest ? (
       <>
-       <div style={{ marginBottom: "20px" }}> You already have a fund request running:
+       <div style={{ marginBottom: "20px", color: "#ffffff"}}> You already have a fund request running:
   
 </div>
   <SmallBoxDetailsv2 smallBoxesData={smallBoxesData} id={RequestID.toString()} />
-  <div style={{ marginTop: "20px" }}> Please wait for this one to expire, or use a different wallet to start a new one.
+  <div style={{ marginTop: "20px",color: "#ffffff" }}> Please wait for this one to expire, or use a different wallet to start a new one.
   
   </div>
   </>
@@ -323,8 +336,8 @@ const Dashboard = () => {
           <button className ="donate-button" type="submit">Submit</button>
         </form>
         <Modal isOpen={showModal} onRequestClose={closeModal} contentLabel="Terms of Service">
-          <h2>Terms of Service</h2>
-          <p>Here are the terms of service.</p>
+          <h2>ADAFund Disclaimer and Website Use Terms</h2>
+          <p> The ADAFund protocol is a decentralized peer-to-peer crowdfunding service protocol that users can access to create, trade and manage digital assets on the Cardano blockchain, and perform other tasks. The Protocol is comprised of free, public, open-source or source-available software including a set of immutable and autonomous smart contracts deployed on the Cardano blockchain. Your use of the ADAFund Protocol involves various significant risks, including, but not limited to, financial loss while digital assets are being supplied to the Protocol and financial loss due to the fluctuation of prices of digital assets, collateral, or assets underlying any digital asset. Before using the ADAFund Protocol, you should closely review the relevant documentation to make sure that you understand how the Protocol works and the risks of your use of the Protocol. The Protocol may be accessed through many web or mobile computer service interfaces; you are responsible for doing your own diligence regarding such interfaces to understand the fees and risks that they present. Although ADAFund Labs, LLC developed much of the initial software code for the ADAFund Protocol, it does not provide, own, or control the ADAFund Protocol, which is run independently by smart contracts deployed on the Cardano blockchain. The Protocol does not constitute an account by which ADAFund or any other third parties act as financial intermediaries or custodians. While the software code has undergone beta testing and auditing, and continues to be improved by feedback from the community, contributors and testers, we cannot guarantee that there will be no bugs in the Protocol. Upgrades and modifications to the Protocol are likely, and will be managed in a community-driven way through decentralized governance. As a condition of your use of the ADAFund website or any third party website connecting to it (collectively the "Site"), you agree that you: (i) are at least 18 years of age; (ii) will not interfere with the intended operation of the Protocol or Site, including by hacking, submitting a virus, fraudulent information or tokens, or attempting to overload, "flood," or "crash" the Protocol or Site; and (iv) are, and your use of the Protocol is and will be, in compliance at all times with all laws, rules, regulations or orders applicable to you. THE PROTOCOL, THE SITE AND ALL INFORMATION CONTAINED ON THE SITE, ARE MADE ACCESSIBLE OR AVAILABLE ON AN "AS IS" AND "AS AVAILABLE" BASIS. YOU EXPRESSLY AGREE THAT USE OF THE SITE OR THE PROTOCOL IS AT YOUR SOLE RISK. TO THE FULLEST EXTENT ALLOWED BY APPLICABLE LAW, NONE OF ADAFund LABS, LLC OR ANY SUBSIDIARY, AFFILIATE, OR PARTNER, OR ANY DEVELOPER, EMPLOYEE, AGENT OR LICENSOR ASSOCIATED WITH ANY OF THEM (COLLECTIVELY, THE "PARTIES"), WARRANT THAT USE OF THE SITE OR PROTOCOL WILL BE UNINTERRUPTED, FULLY SECURE, VIRUS- OR ERROR-FREE, NOR DO THEY MAKE ANY WARRANTY AS TO THE RESULTS THAT MAY BE OBTAINED FROM USE OF THE SITE OR THE PROTOCOL. EACH OF THE FOREGOING HEREBY DISCLAIMS ANY AND ALL REPRESENTATIONS, WARRANTIES AND CONDITIONS, WHETHER EXPRESS OR IMPLIED, AS TO THE PROTOCOL, THE SITE OR ANY INFORMATION CONTAINED ON THE SITE, INCLUDING, BUT NOT LIMITED TO, THOSE OF TITLE, NON-INFRINGEMENT, MERCHANTABILITY, SUITABILITY AND FITNESS FOR A PARTICULAR PURPOSE, AS WELL AS WARRANTIES IMPLIED FROM A COURSE OF PERFORMANCE OR COURSE OF DEALING. IN NO EVENT SHALL THE PARTIES BE LIABLE FOR ANY DAMAGES ARISING OUT OF OR RELATED TO: (I) YOUR USE OF OR INABILITY TO USE THE PROTOCOL, OR THE SITE, OR INFORMATION CONTAINED IN THE SITE, (II) YOUR INTERACTIONS WITH OTHER USERS, OR (III) THESE USE TERMS; INCLUDING BUT NOT LIMITED TO (A) DIRECT, INDIRECT, INCIDENTAL, SPECIAL, PUNITIVE, OR CONSEQUENTIAL DAMAGES OF ANY KIND, AND (B) LOSS OF REVENUES, PROFITS, GOODWILL, CRYPTOCURRENCIES, TOKENS OR ANYTHING ELSE OF VALUE. YOU AGREE THAT ANY CAUSE OF ACTION ARISING OUT OF OR RELATED TO THE SITE MUST COMMENCE WITHIN ONE (1) YEAR AFTER THE CAUSE OF ACTION ACCRUES, OR THE CAUSE OF ACTION IS PERMANENTLY BARRED. </p>
           <button onClick={closeModal}>Close</button>
         </Modal>
       </>

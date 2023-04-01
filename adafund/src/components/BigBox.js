@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { useState,useEffect  } from "react";
 import { Modal, Button, Form } from 'react-bootstrap';
-import { Lucid, Blockfrost } from "https://unpkg.com/lucid-cardano@0.9.8/web/mod.js"
+//import { Lucid, Blockfrost } from "https://unpkg.com/lucid-cardano@0.9.8/web/mod.js"
+import { Lucid, Blockfrost } from 'lucid-cardano';
 import styled from 'styled-components';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {  faTwitter } from '@fortawesome/free-brands-svg-icons';
-import smallBoxesData from './smallBoxesData.json';
+//import smallBoxesData from './smallBoxesData.json';
 import './donationFormStyles.css';
 import NamiIcon from './nami.svg';
 import EternlIcon from './eternl.png';
-
+const smallBoxesData = [];
 const SocialLink = styled.a`
   color: #1da1f2;
   font-size: 24px;
@@ -25,10 +27,11 @@ export const Dropdown = ({ donationAmount, address }) => {
   function sendDonateRequest(txHash,address,number) {
     const data = { txHash, address, number };
 
-    axios.post('http://localhost:5000/api/donate', data)
+    axios.post('https://wenlobster.online:5000/api/donate', data)
       .then(response => {
         console.log()
         console.log(response.data); 
+        alert("Your donation is being processed.")
       })
       .catch(error => {
         console.error(error);
@@ -145,7 +148,8 @@ export const SmallBox = ({
   const remainingTimeMs = date.getTime() - now.getTime();
   const remainingDays = Math.floor(remainingTimeMs / (1000 * 60 * 60 * 24));
   const remainingHours = Math.floor((remainingTimeMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const ada_remaining = parseInt(total_ada)*(100-progressPercentage)/100
+  let ada_remaining = parseInt(total_ada)*(100-progressPercentage)/100
+  if (ada_remaining === 0) ada_remaining+=1;
   const [donationAmount, setDonationAmount] = useState("");
   const placeholder_text = "Enter ADA amount (max: " + Math.trunc(ada_remaining).toString() +")"
   
@@ -200,6 +204,7 @@ export const SmallBox = ({
 
 const BigBox =  ({ searchTerm }) => {
   const [showPopup, setShowPopup] = useState(false);
+  const [BoxesData, setBoxesData] = useState(smallBoxesData)
   const [popupContent, setPopupContent] = useState({ id:"",
       reason:"",
       short_description:"",
@@ -239,22 +244,28 @@ const BigBox =  ({ searchTerm }) => {
 
   const closePopup = () => {
     setShowPopup(false);
-  };
+  };  
 
+  let getFlag=true;
 
-  function sendGETrequest() {
-    
-    axios.get('http://localhost:5000/api/data')
-    .then(response => {
-      
-    })
-    .catch(error => {
-      console.error('Error sending GET request for updates:', error);
-    });
+  
+  useEffect(() => {
+    function sendGETrequest() {
+      axios
+        .get("https://wenlobster.online:5000/api/data")
+        .then((response) => {
+          setBoxesData(response.data);
+        })
+        .catch((error) => {
+          console.error("Error sending GET request for updates:", error);
+        });
     }
-   sendGETrequest() 
- 
-  const filteredBoxes = smallBoxesData
+
+    sendGETrequest();
+  }, []); 
+ //console.log("eeeeeeeee",BoxesData)
+ //console.log("iiiiiiii",smallBoxesData)
+  const filteredBoxes = BoxesData
   .filter((box) => box.id && box.id.toLowerCase().includes(searchTerm.toLowerCase()))
   .sort((a, b) => {
     const dateA = new Date(Date.parse(a.finish_date));
@@ -312,7 +323,7 @@ const BigBox =  ({ searchTerm }) => {
           <p id="pop_start_date">Request start date: {popupContent.start_date}</p>
           <p id="pop_finish_date">Request finish date: {popupContent.finish_date}</p>
           </div>
-          <p id="pop_short_description">Requester's address: {popupContent.address}</p>
+          <p id="pop_requester">Requester's address: {popupContent.address}</p>
 
             <button onClick={closePopup}>Close</button>
             </div>

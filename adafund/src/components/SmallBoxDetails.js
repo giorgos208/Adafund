@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import BigBox from './BigBox';
+import BigBox from './BigBox.js';
 import smallBoxesData from './smallBoxesData.json';
-import SmallBox from './BigBox';
+import SmallBox from './BigBox.js';
 
 export const SmallBoxDetailsv2 = (props) => {
   const { id } = props;

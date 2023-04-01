@@ -1,9 +1,11 @@
-const express = require('express');
-const fs = require('fs').promises;
+import express from 'express';
+import { promises as fs } from 'fs';
+//const fs = require('fs').promises;
+//fs = fs.promises
 const app = express();
-const axios = require('axios');
+import axios  from 'axios';
 
-const cors = require('cors');
+import cors from 'cors';
 app.use(express.json());
 app.use(cors({ origin: 'http://localhost:3000' }));
 
@@ -88,11 +90,18 @@ async function validate_address (address) {
           indexToRemove = jsonData.findIndex((object) => object.finish_date === item.finish_date);
           console.log("date is on or before current_time. Will be removed");
         }
+        if (parseInt(item.collected_ada) >= parseInt(item.total_ada)) {
+          indexToRemove = jsonData.findIndex((object) => object.finish_date === item.finish_date);
+        }
       });
       if (indexToRemove !== -1) {
-        await fs.appendFile('./src/components/expiredRequests.json', JSON.stringify(jsonData[indexToRemove],null, 2));
+        const fileContentsv2 = await fs.readFile('./src/components/expiredRequests.json', 'utf-8');
+        const jsonDatav2 = JSON.parse(fileContentsv2);
+        jsonDatav2.push(jsonData[indexToRemove]);
+        //await fs.appendFile('./src/components/expiredRequests.json',  `,${JSON.stringify(jsonData[indexToRemove],null, 2)}`);
         jsonData.splice(indexToRemove, 1);
         await fs.writeFile('./src/components/smallBoxesData.json', JSON.stringify(jsonData,null, 2));
+        await fs.writeFile('./src/components/expiredRequests.json', JSON.stringify(jsonDatav2,null, 2));
       }
       
       res.json(jsonData);

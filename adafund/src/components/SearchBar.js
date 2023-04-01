@@ -14,8 +14,8 @@ const SearchBar = ({ searchTerm, setSearchTerm }) => {
             boxShadow: '0px 0px 3px 0px rgba(0, 0, 0, 0.3)',
             fontSize: '16px',
             width: '300px',
-            backgroundColor: 'white',
-            color: '#555',
+            backgroundColor: 'black',
+            color: "#cccbcb",
             outline: 'none',
             transition: 'box-shadow 0.3s',
           }}
